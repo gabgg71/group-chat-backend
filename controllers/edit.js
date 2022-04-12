@@ -2,7 +2,9 @@ const { response} = require("express");
 const Usuario = require("../models/Usuario");
 const bcrypt = require("bcryptjs");
 
+
 const edit =async(req, res= response)=>{
+    console.log('Me llamaste edit');
     try {
         const {email} = req.body;
         let usuario = await Usuario.findOne({email});
@@ -33,6 +35,9 @@ const edit =async(req, res= response)=>{
         });
     }
 }
+
+
+
 module.exports={
     edit
 }

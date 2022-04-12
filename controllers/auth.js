@@ -65,4 +65,6 @@ const loguearUsuario = async(req, res = response) => {
 
 
 
+
+
 module.exports = { crearUsuario, loguearUsuario };
