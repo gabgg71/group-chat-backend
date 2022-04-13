@@ -2,6 +2,8 @@ const { response} = require("express");
 const Usuario = require("../models/Usuario");
 const bcrypt = require("bcryptjs");
 const { generarJWT } = require("../helpers/jwtConf");
+const { urlGoogle,  getGoogleAccountFromCode} = require('../configuration/google-scope.js');
+
 
 const crearUsuario = async (req, res = response) => {
   try {
@@ -63,8 +65,33 @@ const loguearUsuario = async(req, res = response) => {
   }
 };
 
+const confirmaExistencia =async(req, res = response)=>{
+  console.log("Entro aqui lala"); 
+  let {code }= req.body;
+  try {
+    let data = await getGoogleAccountFromCode(code);
+    console.log("Entro aqui"); 
+    console.log(data); 
+    res.status(200).json({
+      ok:true,
+      msg:data
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok:false,
+      msg:'Error, comuniquese con el administrador'
+    })
+  }
+}
+
+const dameUrl =(req, res = response)=>{
+  let url = urlGoogle();
+  res.json({
+    url:url
+  });
+}
 
 
 
 
-module.exports = { crearUsuario, loguearUsuario };
+module.exports = { crearUsuario, loguearUsuario, dameUrl, confirmaExistencia };
