@@ -55,6 +55,7 @@ const loguearUsuario = async(req, res = response) => {
     res.json({
       ok: true, 
       uid: usuario.id,
+      user: usuario,
       token
     });
   } catch (error) {
