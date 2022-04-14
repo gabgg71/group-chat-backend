@@ -6,12 +6,7 @@ const upload = require("../middlewares/upload");
 const router = Router();
 
 
-router.put("/", [
-    check('name','name cant be empty').notEmpty(),
-    check('email','name cant be empty').notEmpty().isEmail(),
-    check('password','name cant be empty').notEmpty().isLength({min:6}), 
-    validarCampos
-], edit);
+router.put("/", edit);
 
 
 router.post("/photo",upload, (req, res)=>{
@@ -20,3 +15,18 @@ router.post("/photo",upload, (req, res)=>{
 });});
 
 module.exports =router;
+
+
+
+
+
+
+
+/*
+no dejar cambiar info sin pass
+[
+    check('name','name cant be empty').notEmpty(),
+    check('email','name cant be empty').notEmpty().isEmail(),
+    check('password','name cant be empty').notEmpty().isLength({min:6}), 
+    validarCampos
+]*/ 
