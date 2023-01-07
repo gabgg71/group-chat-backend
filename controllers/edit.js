@@ -13,14 +13,6 @@ const edit =async(req, res= response)=>{
                 msg: 'no existe ese usuario'
             });
         }
-        /*
-        const validPassword = bcrypt.compareSync(req.body.password, usuario.password);
-        if(!validPassword){
-            const salt = bcrypt.genSaltSync();
-            req.body.password = bcrypt.hashSync(req.body.password, salt);
-        }else{
-            req.body.password = usuario.password;
-        }*/
         
         const result = await Usuario.findOneAndUpdate({email}, req.body,{new: true});
         return res.status(200).json({
@@ -36,8 +28,24 @@ const edit =async(req, res= response)=>{
     }
 }
 
+//para cambio de pass 
+const validaPass = async(req, res = response) => {
+    const { email, password } = req.body;
+    let usuario = await Usuario.findOne({ email });
+    const validPassword = bcrypt.compareSync(password, usuario.password);
+    if(!validPassword){
+      return res.status(400).json({
+        correct: false
+      })
+    }
+    return res.status(400).json({
+      correct: true
+    })
+  }
+
 
 
 module.exports={
-    edit
+    edit, 
+    validaPass
 }

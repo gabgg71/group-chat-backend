@@ -1,32 +1,16 @@
 const {Router} = require('express');
 const {check} = require('express-validator');
-const { edit } = require('../controllers/edit');
+const { edit, validaPass } = require('../controllers/edit');
 const { validarCampos } = require('../middlewares/validarCampos');
-const upload = require("../middlewares/upload");
 const router = Router();
 
 
 router.put("/", edit);
+router.put("/validation", [check('email', 'Email can not be empty').isEmail(),
+check('password', 'Password can not be empty or have a lenght inferior to 6').not().isEmpty().isLength({ min: 6 }),],
+validaPass);
 
 
-router.post("/photo",upload, (req, res)=>{
-    res.json({
-    msg: 'Lo hice'
-});});
 
 module.exports =router;
 
-
-
-
-
-
-
-/*
-no dejar cambiar info sin pass
-[
-    check('name','name cant be empty').notEmpty(),
-    check('email','name cant be empty').notEmpty().isEmail(),
-    check('password','name cant be empty').notEmpty().isLength({min:6}), 
-    validarCampos
-]*/ 

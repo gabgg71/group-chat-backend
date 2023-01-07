@@ -33,6 +33,61 @@ const crearUsuario = async (req, res = response) => {
   }
 };
 
+const crearUsuarioGoogle = async ({id, email, name, img}) => {
+  try {
+    let usuario = await Usuario.findOne({ email });
+    if (usuario) {
+      const token = await generarJWT(usuario.id);
+      return {
+        ok: false,
+        uid: usuario.id,
+        user: usuario,
+        token
+      };
+    }
+    usuario = new Usuario({id, email, name, img});
+    await usuario.save();
+    const token = await generarJWT(usuario.id);
+    return {
+      ok: true,
+      uid: usuario.id,
+      user: usuario,
+      token
+    }
+  } catch (error) {
+    return {
+      ok: false,
+      msg: "Por favor hable con el administrador"
+
+    }
+  }
+};
+
+const loginGoogle =async(email)=>{
+  try {
+    let usuario = await Usuario.findOne({ email });
+    if (!usuario) {
+      return {
+        ok: false,
+        msg: "El usuario no existe con ese email ",
+      };
+    }
+    const token = await generarJWT(usuario.id);
+    return {
+      ok: true, 
+      uid: usuario.id,
+      user: usuario,
+      token
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      msg: "Por favor hable con el administrador",
+    };
+  }
+
+}
+
 const loguearUsuario = async(req, res = response) => {
   const { email, password } = req.body;
   try {
@@ -66,21 +121,25 @@ const loguearUsuario = async(req, res = response) => {
   }
 };
 
+
 const confirmaExistencia =async(req, res = response)=>{
-  console.log("Entro aqui lala"); 
-  let {code }= req.body;
+  let {code, type }= req.body;
   try {
-    let data = await getGoogleAccountFromCode(code);
-    console.log("Entro aqui"); 
-    console.log(data); 
+    let data = await getGoogleAccountFromCode(code, type);
+    let resp = undefined;
+    if(type === 'login'){
+      resp = await loginGoogle(data.email);
+    }else {
+      resp = await crearUsuarioGoogle(data);
+    }
     res.status(200).json({
       ok:true,
-      msg:data
+      resp
     });
   } catch (error) {
     res.status(500).json({
       ok:false,
-      msg:'Error, comuniquese con el administrador'
+      resp:'Error, comuniquese con el administrador'
     })
   }
 }

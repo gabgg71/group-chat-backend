@@ -20,8 +20,8 @@ const UsuarioSchema = Schema({
     },
     password: {
         type: String,
-        required: true,
       }
 });
+
 
 module.exports= model('Usuario', UsuarioSchema); 
