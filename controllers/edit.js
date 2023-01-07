@@ -5,15 +5,13 @@ const bcrypt = require("bcryptjs");
 
 const edit =async(req, res= response)=>{
     try {
-        const {email} = req.body;
+        const {email, password} = req.body;
         let usuario = await Usuario.findOne({email});
-        if(!usuario){
-            res.status(400).json({
-                ok: false,
-                msg: 'no existe ese usuario'
-            });
+        const validPassword = bcrypt.compareSync(password, usuario.password);
+        if(!validPassword){
+            const salt = bcrypt.genSaltSync();
+            req.body.password = bcrypt.hashSync(password, salt);
         }
-        
         const result = await Usuario.findOneAndUpdate({email}, req.body,{new: true});
         return res.status(200).json({
             ok: true,

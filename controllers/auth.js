@@ -8,6 +8,7 @@ const { urlGoogle,  getGoogleAccountFromCode} = require('../configuration/google
 const crearUsuario = async (req, res = response) => {
   try {
     const { email, password } = req.body;
+    req.body.img = process.env.PREDEFINED
     let usuario = await Usuario.findOne({ email });
     if (usuario) {
       return res.status(400).json({
