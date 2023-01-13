@@ -1,8 +1,10 @@
-const {Router, response} = require('express');
+const {Router} = require('express');
 const { check } = require("express-validator");
-const { crearUsuario, loguearUsuario ,dameUrl, confirmaExistencia} = require('../controllers/auth');
+const { crearUsuario, loguearUsuario ,dameUrl, confirmaExistencia, confirmaExistenciaGit} = require('../controllers/auth');
 const { validarCampos } = require('../middlewares/validarCampos');
 const router = Router();
+
+
 
 router.post("/new", [
     check('email', 'Email can not be empty').isEmail(),
@@ -13,6 +15,10 @@ router.post("/new", [
 router.get("/url-google", dameUrl);
 
 router.post("/google-confirm", confirmaExistencia);
+
+router.get('/github/callback', confirmaExistenciaGit)
+
+
 
 router.post("/", [
     check('email', 'Email can not be empty').isEmail(),

@@ -3,6 +3,8 @@ const Usuario = require("../models/Usuario");
 const bcrypt = require("bcryptjs");
 const { generarJWT } = require("../helpers/jwtConf");
 const { urlGoogle,  getGoogleAccountFromCode} = require('../configuration/google-scope.js');
+const {DataGit} = require('../configuration/github-scope.js');
+
 
 
 const crearUsuario = async (req, res = response) => {
@@ -64,6 +66,36 @@ const crearUsuarioGoogle = async ({id, email, name, img}) => {
   }
 };
 
+const crearUsuarioGithub = async (data) => {
+  try {
+    let usuario = await Usuario.findOne({user: data.user});
+    if (usuario) {
+      const token = await generarJWT(usuario.id);
+      return {
+        ok: false,
+        uid: usuario.id,
+        user: usuario,
+        token
+      };
+    }
+    usuario = new Usuario(data);
+    await usuario.save();
+    const token = await generarJWT(usuario.id);
+    return {
+      ok: true,
+      uid: usuario.id,
+      user: usuario,
+      token
+    }
+  } catch (error) {
+    return {
+      ok: false,
+      msg: "Por favor hable con el administrador"
+
+    }
+  }
+};
+
 const loginGoogle =async(email)=>{
   try {
     let usuario = await Usuario.findOne({ email });
@@ -84,6 +116,31 @@ const loginGoogle =async(email)=>{
     return {
       ok: false,
       msg: "Por favor hable con el administrador",
+    };
+  }
+
+}
+
+const loginGithub =async(user)=>{
+  try {
+    let usuario = await Usuario.findOne({ user});
+    if (!usuario) {
+      return {
+        ok: false,
+        msg: "Usuario no registrado ",
+      };
+    }
+    const token = await generarJWT(usuario._id);
+    return {
+      ok: true, 
+      uid: usuario._id,
+      user: usuario,
+      token
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      msg: "Por favor hable con el administrador"
     };
   }
 
@@ -117,7 +174,7 @@ const loguearUsuario = async(req, res = response) => {
   } catch (error) {
     res.status(500).json({
       ok: false,
-      msg: "Por favor hable con el administrador",
+      msg: "Por favor hable con el administrador"
     });
   }
 };
@@ -145,6 +202,30 @@ const confirmaExistencia =async(req, res = response)=>{
   }
 }
 
+
+
+const confirmaExistenciaGit =async(req, res = response)=>{
+  let {code, type}= req.query
+  try {
+    let datica = await DataGit(code)
+    let resp = undefined;
+    if(type === 'login'){
+      resp = await loginGithub(datica.user);
+    }else {
+      resp = await crearUsuarioGithub(datica);
+    }
+    res.status(200).json({
+      resp
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok:false,
+      resp:'Error, comuniquese con el administrador'
+    })
+  }
+  
+}
+
 const dameUrl =(req, res = response)=>{
   let url = urlGoogle();
   res.json({
@@ -155,4 +236,4 @@ const dameUrl =(req, res = response)=>{
 
 
 
-module.exports = { crearUsuario, loguearUsuario, dameUrl, confirmaExistencia };
+module.exports = { crearUsuario, loguearUsuario, dameUrl, confirmaExistencia, crearUsuarioGithub , confirmaExistenciaGit};

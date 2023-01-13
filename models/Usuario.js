@@ -1,6 +1,10 @@
 const {Schema, model} = require('mongoose');
 
 const UsuarioSchema = Schema({
+    user:{
+        type: String, 
+        unique: true
+    },
     img:{
         type: String
     },
@@ -15,7 +19,6 @@ const UsuarioSchema = Schema({
     },
     email:{
         type: String, 
-        required: true, 
         unique: true
     },
     password: {
