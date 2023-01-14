@@ -26,15 +26,15 @@ const edit =async(req, res= response)=>{
 
 //para cambio de pass 
 const validaPass = async(req, res = response) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
     let usuario = await Usuario.findOne({ email });
     const validPassword = bcrypt.compareSync(password, usuario.password);
     if(!validPassword){
-      return res.status(400).json({
+      return res.json({
         correct: false
       })
     }
-    return res.status(400).json({
+    return res.status(200).json({
       correct: true
     })
   }
