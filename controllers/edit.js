@@ -6,11 +6,9 @@ const bcrypt = require("bcryptjs");
 const edit =async(req, res= response)=>{
     try {
         const {email, password} = req.body;
-        let usuario = await Usuario.findOne({email});
-        const validPassword = bcrypt.compareSync(password, usuario.password);
-        if(!validPassword){
-            const salt = bcrypt.genSaltSync();
-            req.body.password = bcrypt.hashSync(password, salt);
+        if(password){
+          const salt = bcrypt.genSaltSync();
+          req.body.password = bcrypt.hashSync(password, salt);
         }
         const result = await Usuario.findOneAndUpdate({email}, req.body,{new: true});
         return res.status(200).json({
