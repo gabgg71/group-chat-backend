@@ -19,7 +19,7 @@ const edit =async(req, res= response)=>{
     } catch (error) {
         return res.status(500).json({
             ok: false,
-            msg: 'Error, comuniquese con el admin'
+            msg: 'Please talk to the administrator'
         });
     }
 }

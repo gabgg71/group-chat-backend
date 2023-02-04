@@ -2,8 +2,9 @@ const {Schema, model} = require('mongoose');
 
 const UsuarioSchema = Schema({
     user:{
-        type: String, 
-        unique: true
+        type: String,
+        unique: true,
+        sparse: true
     },
     img:{
         type: String
@@ -23,8 +24,14 @@ const UsuarioSchema = Schema({
     },
     password: {
         type: String,
-      }
-});
+      }, 
+    channels:{
+        type:  [
+            String
+          ],
+        default: []
+    },
+},{ versionKey: false });
 
 
 module.exports= model('Usuario', UsuarioSchema); 

@@ -15,7 +15,7 @@ const crearUsuario = async (req, res = response) => {
     if (usuario) {
       return res.status(400).json({
         ok: false,
-        msg: "El usuario ya existe",
+        msg: "This user already exists",
       });
     }
     usuario = new Usuario(req.body);
@@ -31,10 +31,11 @@ const crearUsuario = async (req, res = response) => {
   } catch (error) {
     res.status(500).json({
       ok: false,
-      msg: "Por favor hable con el administrador",
+      msg: "Please talk to the administrator",
     });
   }
 };
+
 
 const crearUsuarioGoogle = async ({id, email, name, img}) => {
   try {
@@ -60,7 +61,7 @@ const crearUsuarioGoogle = async ({id, email, name, img}) => {
   } catch (error) {
     return {
       ok: false,
-      msg: "Por favor hable con el administrador"
+      msg: "Please talk to the administrator"
 
     }
   }
@@ -90,7 +91,7 @@ const crearUsuarioGithub = async (data) => {
   } catch (error) {
     return {
       ok: false,
-      msg: "Por favor hable con el administrador"
+      msg: "Please talk to the administrator"
 
     }
   }
@@ -102,7 +103,7 @@ const loginGoogle =async(email)=>{
     if (!usuario) {
       return {
         ok: false,
-        msg: "El usuario no existe con ese email ",
+        msg: "This user does not exists",
       };
     }
     const token = await generarJWT(usuario.id);
@@ -115,7 +116,7 @@ const loginGoogle =async(email)=>{
   } catch (error) {
     return {
       ok: false,
-      msg: "Por favor hable con el administrador",
+      msg: "Please talk to the administrator",
     };
   }
 
@@ -127,7 +128,7 @@ const loginGithub =async(user)=>{
     if (!usuario) {
       return {
         ok: false,
-        msg: "Usuario no registrado ",
+        msg: "Unregistered user",
       };
     }
     const token = await generarJWT(usuario._id);
@@ -140,7 +141,7 @@ const loginGithub =async(user)=>{
   } catch (error) {
     return {
       ok: false,
-      msg: "Por favor hable con el administrador"
+      msg: "Please talk to the administrator"
     };
   }
 
@@ -153,14 +154,14 @@ const loguearUsuario = async(req, res = response) => {
     if (!usuario) {
       return res.status(400).json({
         ok: false,
-        msg: "El usuario no existe con ese email ",
+        msg: "This user does not exists",
       });
     }
     const validPassword = bcrypt.compareSync(password, usuario.password);
     if(!validPassword){
       return res.status(400).json({
         ok: false,
-        msg: 'Password incorrecto'
+        msg: 'Wrong password'
       })
     }
     const token = await generarJWT(usuario.id);
@@ -174,7 +175,7 @@ const loguearUsuario = async(req, res = response) => {
   } catch (error) {
     res.status(500).json({
       ok: false,
-      msg: "Por favor hable con el administrador"
+      msg: "Please talk to the administrator"
     });
   }
 };
@@ -197,7 +198,7 @@ const confirmaExistencia =async(req, res = response)=>{
   } catch (error) {
     res.status(500).json({
       ok:false,
-      resp:'Error, comuniquese con el administrador'
+      resp:'Please talk to the administrator'
     })
   }
 }
@@ -220,7 +221,7 @@ const confirmaExistenciaGit =async(req, res = response)=>{
   } catch (error) {
     res.status(500).json({
       ok:false,
-      resp:'Error, comuniquese con el administrador'
+      resp:'Please talk to the administrator'
     })
   }
   
